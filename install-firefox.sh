@@ -8,10 +8,37 @@ GECKODRIVER_VERSION="0.20.0"
 
 install_firefox() {
     echo "Installing Firefox $FIREFOX_VERSION"
+
+    FIREFOX_DOWNLOAD_URL=https://download-installer.cdn.mozilla.net/pub/firefox/releases/$FIREFOX_VERSION/linux-x86_64/en-US/firefox-$FIREFOX_VERSION.tar.bz2 \
+        && rm -rf /opt/firefox \
+        && curl -sSL $FIREFOX_DOWNLOAD_URL -o /tmp/firefox.tar.bz2 \
+        && tar -C /opt -xjf /tmp/firefox.tar.bz2 \
+        && rm /tmp/firefox.tar.bz2 \
+        && mv /opt/firefox /opt/firefox-$FIREFOX_VERSION \
+        && ln -fs /opt/firefox-$FIREFOX_VERSION/firefox /usr/bin/firefox
+
+    if [ $? != 0 ]; then
+        echo "Error installing Firefox $FIREFOX_VERSION" >&2
+        exit 1
+    fi
 }
 
 install_geckodriver() {
     echo "Installing Geckodriver $GECKODRIVER_VERSION"
+
+    GECKODRIVER_DOWNLOAD_URL=https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIVER_VERSION/geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz \
+        && rm -rf /opt/geckodriver \
+        && curl -sSL $GECKODRIVER_DOWNLOAD_URL -o /tmp/geckodriver.tar.gz \
+        && tar -C /opt -zxf /tmp/geckodriver.tar.gz \
+        && rm /tmp/geckodriver.tar.gz \
+        && mv /opt/geckodriver /opt/geckodriver-$GECKODRIVER_VERSION \
+        && chmod 755 /opt/geckodriver-$GECKODRIVER_VERSION \
+        && ln -fs /opt/geckodriver-$GECKODRIVER_VERSION /usr/bin/geckodriver
+
+    if [ $? != 0 ]; then
+        echo "Error installing Geckodriver $GECKODRIVER_VERSION" >&2
+        exit 1
+    fi
 }
 
 main() {
