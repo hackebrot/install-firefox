@@ -10,12 +10,21 @@ install_firefox() {
     echo "Installing Firefox $FIREFOX_VERSION"
 }
 
-
 install_geckodriver() {
     echo "Installing Geckodriver $GECKODRIVER_VERSION"
 }
 
 main() {
+    if [ ! "$(uname -s)" = "Linux" ]; then
+        echo "install-firefox only supports linux at this point" >&2
+        exit 1
+    fi
+
+    if [ ! "$(uname -m)" = "x86_64" ]; then
+        echo "install-firefox only supports x86_64 architecture at this point" >&2
+        exit 1
+    fi
+
     while test $# -gt 0; do
         case "$1" in
         -f|--firefox)
